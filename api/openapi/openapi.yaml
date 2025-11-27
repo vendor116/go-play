@@ -2,7 +2,7 @@ openapi: 3.0.3
 
 info:
   title: PlayGo Management API
-  description: REST API for PlayGo with chi framework
+  description: REST API for PlayGo application
   version: 1.0.0
 
 servers:
@@ -28,6 +28,9 @@ components:
   schemas:
     InfoResponse:
       type: object
+      required:
+        - name
+        - version
       properties:
         name:
           type: string

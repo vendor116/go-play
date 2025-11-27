@@ -12,10 +12,9 @@ import (
 	"syscall"
 
 	"github.com/vendor116/playgo/internal"
-	"github.com/vendor116/playgo/internal/api"
+	"github.com/vendor116/playgo/internal/app/api"
 	"github.com/vendor116/playgo/internal/config"
-	"github.com/vendor116/playgo/internal/generated"
-	"github.com/vendor116/playgo/internal/http"
+	"github.com/vendor116/playgo/internal/server"
 )
 
 var (
@@ -30,7 +29,7 @@ func main() {
 
 	internal.DefaultJSONLogger(app, version)
 
-	cfg, err := config.Load[config.App](cfgPath)
+	cfg, err := config.LoadAndValidate(cfgPath)
 	if err != nil {
 		slog.Default().Error("failed to load config", "error", err)
 		return
@@ -40,17 +39,15 @@ func main() {
 		slog.Default().Warn("failed to set log level", "error", err)
 	}
 
-	apiServer := api.NewServer()
-
 	ctx, cancel := context.WithCancelCause(context.Background())
 
-	var wg sync.WaitGroup
+	wg := &sync.WaitGroup{}
+
 	wg.Go(func() {
-		err = http.StartAPIServer(
+		err = server.StartAPIServer(
 			ctx,
-			generated.HandlerFromMux(apiServer, api.GetRouter(apiServer)),
-			cfg.APIPServer.Host,
-			cfg.APIPServer.Port,
+			api.SetupService(cfg.Debug),
+			cfg.APIServer,
 		)
 		if err != nil {
 			cancel(fmt.Errorf("failed to start API server: %w", err))
@@ -63,7 +60,7 @@ func main() {
 	select {
 	case sig := <-sigChan:
 		slog.Default().Warn("received shutdown signal", "signal", sig.String())
-		cancel(context.Canceled)
+		cancel(nil)
 	case <-ctx.Done():
 		if err = context.Cause(ctx); !errors.Is(err, context.Canceled) {
 			slog.Default().Error("application completed", "error", err)

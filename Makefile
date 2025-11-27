@@ -23,9 +23,11 @@ fix:
 
 generate:
 	@echo "Generating OpenAPI models..."
-	go tool oapi-codegen -config api/models.cfg.yaml api/openapi.yaml
+	go tool oapi-codegen --config api/openapi/models.cfg.yaml api/openapi/openapi.yaml
 	@echo "Generating OpenAPI server..."
-	go tool oapi-codegen -config api/server.cfg.yaml api/openapi.yaml
+	go tool oapi-codegen --config api/openapi/server.cfg.yaml api/openapi/openapi.yaml
+	@echo "Generating OpenAPI client..."
+	go tool oapi-codegen --config api/openapi/client.cfg.yaml api/openapi/openapi.yaml
 
 GOLANGCI_LINT_VERSION := v2.6.2
 OAPI_CODEGEN_VERSION := v2.5.1

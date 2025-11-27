@@ -7,15 +7,17 @@ import (
 
 var logLevel slog.LevelVar
 
-func DefaultJSONLogger(app, version string) {
+func DefaultJSONLogger(name, version string) {
 	h := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: &logLevel,
 	})
 
-	slog.SetDefault(slog.New(h).With(
-		slog.String("app", app),
-		slog.String("version", version),
-	))
+	slog.SetDefault(slog.New(h).
+		With(
+			slog.String("application", name),
+			slog.String("version", version),
+		),
+	)
 }
 
 func SetLogLevel(level string) error {

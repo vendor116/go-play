@@ -5,14 +5,14 @@ import (
 	"time"
 )
 
-type APIServer struct {
+type HTTPServer struct {
 	Host              string        `mapstructure:"host"`
 	Port              string        `mapstructure:"port"`
 	ReadHeaderTimeout time.Duration `mapstructure:"read_header_timeout"`
 	ShutdownTimeout   time.Duration `mapstructure:"shutdown_timeout"`
 }
 
-func (as APIServer) Validate() error {
+func (as HTTPServer) Validate() error {
 	if as.Port == "" {
 		return errors.New("port is required")
 	}

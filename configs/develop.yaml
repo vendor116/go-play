@@ -1,8 +1,7 @@
-api_server:
+http_server:
   host: localhost
   port: 8080
   read_header_timeout: 1s
   shutdown_timeout: 1s
 
 log_level: info
-debug: false

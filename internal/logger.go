@@ -5,25 +5,23 @@ import (
 	"os"
 )
 
-var logLevel slog.LevelVar
-
-func DefaultJSONLogger(name, version string) {
-	h := slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
-		Level: &logLevel,
-	})
-
-	slog.SetDefault(slog.New(h).
-		With(
-			slog.String("application", name),
-			slog.String("version", version),
-		),
-	)
-}
-
-func SetLogLevel(level string) error {
-	if err := logLevel.UnmarshalText([]byte(level)); err != nil {
+func SetupLogger(level string, version string) error {
+	var lvl slog.Level
+	if err := lvl.UnmarshalText([]byte(level)); err != nil {
 		return err
 	}
 
+	slog.SetDefault(
+		slog.New(
+			slog.NewJSONHandler(
+				os.Stdout,
+				&slog.HandlerOptions{
+					Level: lvl,
+				},
+			),
+		).With(
+			slog.String("version", version),
+		),
+	)
 	return nil
 }

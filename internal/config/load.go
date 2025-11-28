@@ -10,7 +10,7 @@ import (
 
 const envPrefix = "V116"
 
-func LoadAndValidate(path string) (*Config, error) {
+func Load[T any](path string) (*T, error) {
 	viper.AutomaticEnv()
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	viper.SetEnvPrefix(envPrefix)
@@ -25,13 +25,9 @@ func LoadAndValidate(path string) (*Config, error) {
 		return nil, fmt.Errorf("error reading config file: %w", err)
 	}
 
-	var cfg Config
+	var cfg T
 	if err := viper.Unmarshal(&cfg); err != nil {
 		return nil, fmt.Errorf("unable to decode into struct: %w", err)
-	}
-
-	if err := cfg.Validate(); err != nil {
-		return nil, fmt.Errorf("invalid config: %w", err)
 	}
 
 	return &cfg, nil

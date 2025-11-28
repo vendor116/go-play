@@ -4,6 +4,6 @@ FROM alpine:${ALPINE_VERSION}
 
 RUN apk add --no-cache ca-certificates
 
-COPY ./bin/playgo /playgo
+COPY ./bin/go-play /go-play
 
-CMD ["/playgo"]
+CMD ["/go-play"]

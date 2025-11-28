@@ -1,10 +1,9 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/oapi-codegen/oapi-codegen/refs/heads/main/configuration-schema.json
-package: openapi
+package: goplayv1
 
 generate:
-  gin-server: true
+  client: true
   models: false
-  strict-server: true
-  embedded-spec: false
 
-output: pkg/openapi/server.gen.go
+output: pkg/openapi/goplayv1/client.gen.go
+
